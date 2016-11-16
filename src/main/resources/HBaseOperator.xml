@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+	<property>
+    	<name>hbase.master</name>
+    	<value>cloudgis1.com:60000,cloudgis2.com:60000</value>
+    	<description>
+    		hbase双mater
+    	</description>
+  	</property>
+  	<property>
+    	<name>hbase.rpc.timeout</name>
+    	<value>3600000</value>
+    	<description>
+    		hbase批量写入是会出现写入异常，
+    		此时应该调整此参数在大点,此参数单位是ms毫秒
+    	</description>
+  	</property>
+  	<property>
+    	<name>dfs.datanode.socket.write.timeout</name>
+    	<value>3600000</value>
+  	</property>
+  	<property>
+    	<name>dfs.socket.timeout</name>
+    	<value>3600000</value>
+  	</property>
+  	<property>
+    	<name>hbase.zookeeper.quorum</name>
+    	<value>cloudgis2.com,cloudgis1.com,cloudgis3.com</value>
+    	<description>
+    		hbase安装主机，此处既可以填入主机名，也可填写主机ip地址
+    	</description>
+  	</property>
+  	<property>
+    	<name>hbase.zookeeper.property.clientPort</name>
+    	<value>2181</value>
+  	</property>
+  	<property>
+    	<name>zookeeper.znode.parent</name>
+    	<value>/hbase-unsecure</value>
+    	<description>
+    		使用Ambari部署Hadoop集群时，
+    		由于Ambari初始HBase云存储时，
+    		已经将HBase zookeeper.znode.parent所需信息存入了“/hbase-unsecure”，
+    		故应设置此变量，如果没有设置，会出现异常
+    	</description>
+  	</property>
+  	<property>
+    	<name>hbase.client.scanner.timeout.period</name>
+    	<value>600000</value>
+    	<description>
+    		默认为60000，解决org.apache.hadoop.hbase.client.ScannerTimeoutException
+    	</description>
+  	</property>
+  	
+  	
+  	<!-- HBaseOperator 自身配置变量 -->
+  	<property>
+    	<name>use.htable.pool</name>
+    	<value>true</value>
+    	<description>
+    		默认为false
+    	</description>
+  	</property>
+  <!-- 	<property>
+    	<name>htable.pool.max.size</name>
+    	<value>10</value>
+    	<description>
+    		新版本中不存在这个参数
+    		默认为10，HTablePool有一个maxsize，HTablePool针对每个表都有一个Pool，maxsize表示这个Pool的最大大小
+    	</description>
+  	</property> -->
+  	<!-- HBaseOperator 自身配置变量 -->
+	<property>
+		<name>hbase.client.scanner.timeout.period</name>
+		<value>30000</value>
+		<description>
+			Client socket timeout (milliseconds)
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.provider</name>
+		<value>pool</value>
+		<description>
+			Client provider strategy:
+			“pool” uses a pool of clients
+			“thread-local” a client per thread
+			Note that “thread-local” provider can have a resource leak if threads are recycled
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.count</name>
+		<value>50</value>
+		<description>
+			Max number of clients for “pool” provider
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.obtain.timeout</name>
+		<value>3000</value>
+		<description>
+			Timeout (milliseconds) to wait when obtaining clients from the “pool” provider
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.retry.strategy</name>
+		<value>backoff</value>
+		<description>
+			Client retry strategy: “backoff” for back off between attempts; “n-times” for fixed number of tries
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.retry.attempts</name>
+		<value>2</value>
+		<description>
+			Number of times to retry (“n-times” strategy)
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.retry.backoff.initial</name>
+		<value>100</value>
+		<description>
+			Initial sleep time (“backoff” strategy)
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.retry.backoff.factor</name>
+		<value>4</value>
+		<description>
+			Multiplication factor for sleep time
+		</description>
+	</property>
+	<property>
+		<name>data.tx.client.retry.backoff.limit</name>
+		<value>30000</value>
+		<description>
+			Exit when sleep time reaches this limit
+		</description>
+	</property>
+	<!-- 协处理器 -->
+	<property>
+		<name>hbase.coprocessor.region.classes</name>
+		<value>org.apache.tephra.hbase.coprocessor.TransactionProcessor</value>
+	</property>
+	<!-- 测试 -->
+	<property>
+		<name>data.tx.bind.address</name>
+		<value>cloudgis2.com</value>
+	</property>
+</configuration>

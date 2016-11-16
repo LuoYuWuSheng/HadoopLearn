@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+  	<property>
+    	<name>ms.port</name>
+    	<value>11211</value>
+    	<description>运行Memcached Server服务器程序QuickCached的端口</description>
+  	</property>
+  	
+  	<property>
+    	<name>m.server.addr</name>
+    	<value>192.168.3.201</value>
+    	<description>运行缓存服务MServer程序的地址</description>
+  	</property>
+  	<property>
+    	<name>m.server.port</name>
+    	<value>3333</value>
+    	<description>运行缓存服务MServer程序的端口</description>
+  	</property>
+  	<property>
+    	<name>m.server.cached.capacity</name>
+    	<value>60</value>
+    	<description>运行缓存服务MServer程序中可以缓存的文件缓存总大小</description>
+  	</property>
+
+
+  	<property>
+    	<name>m.client.port</name>
+    	<value>3333</value>
+    	<description>运行缓存服务MServer程序的端口</description>
+  	</property>
+  	<property>
+    	<name>m.client.cached.capacity</name>
+    	<value>20</value>
+    	<description>运行缓存服务MServer程序中可以缓存的文件缓存总大小</description>
+  	</property>
+  	
+  	<property>
+    	<name>ipc.client.connect.max.retries</name>
+    	<value>2</value>
+    	<description>用户客户端ipc连接最大的尝试次数</description>
+  	</property>
+</configuration>

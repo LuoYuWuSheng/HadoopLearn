@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+   	<property>
+    	<name>use.which.store</name>
+    	<value>cloud</value>
+    	<description>
+    		选择访问哪种存储形式的瓦片，可选sqlite，localfile，cloud
+    	</description>
+  	</property>
+	
+	<!-- <property>
+    	<name>gtvector.store.method</name>
+    	<value>hdfsPF</value>
+    	<description>
+    		选择gtvector存储方案，可选hbase，hdfsSF,hdfsPF
+    	</description>
+  	</property> -->
+  	
+  	<!-- 使用sqlite中存储的瓦片时需要配置的参数 -->
+  	<property>
+    	<name>sqlite.db.path</name>
+    	<value>D:\work\SQLiteGIS\SQLiteMap\</value>
+    	<description>
+    		金字塔瓦片存储文件路径
+    	</description>
+  	</property>
+  	<!-- END -->
+  	
+  	<!-- 使用本地文件系统localFile中存储的瓦片时需要配置的参数 -->
+  	<property>
+    	<name>local.file.path</name>
+    	<value>F:\DPTGS-Release\map\</value>
+    	<description>
+    		使用本地文件系统存储的瓦片所在的路径
+    	</description>
+    </property>
+   	<!-- END -->
+
+</configuration>

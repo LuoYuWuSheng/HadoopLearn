@@ -143,8 +143,8 @@
 		<value>org.apache.tephra.hbase.coprocessor.TransactionProcessor</value>
 	</property>
 	<!-- 测试 -->
-	<property>
-		<name>data.tx.bind.address</name>
-		<value>cloudgis2.com</value>
-	</property>
+	<!--<property>-->
+		<!--<name>data.tx.bind.address</name>-->
+		<!--<value>cloudgis2.com</value>-->
+	<!--</property>-->
 </configuration>

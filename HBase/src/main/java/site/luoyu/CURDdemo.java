@@ -4,26 +4,24 @@ package site.luoyu;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.apache.commons.logging.LogFactory;
 import org.apache.curator.framework.api.CuratorEvent;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.tephra.TransactionAware;
 import org.apache.tephra.TransactionContext;
 import org.apache.tephra.TransactionFailureException;
-import org.apache.tephra.TransactionSystemClient;
-import org.apache.tephra.distributed.PooledClientProvider;
-import org.apache.tephra.distributed.ThriftClientProvider;
-import org.apache.tephra.distributed.TransactionService;
 import org.apache.tephra.distributed.TransactionServiceClient;
 import org.apache.tephra.hbase.TransactionAwareHTable;
+import org.apache.tephra.hbase.coprocessor.TransactionProcessor;
 import org.apache.tephra.runtime.*;
-import org.apache.twill.discovery.ZKDiscoveryService;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -37,6 +35,8 @@ public class CURDdemo
 {
     private Logger logger = LogManager.getLogger(CURDdemo.class);
     private Configuration configuration;
+    private String tableName1 = "tephra1";
+    private String tableName2 = "tephra2";
     private HTable hTable;
     private HTable hTable2;
 
@@ -60,9 +60,25 @@ public class CURDdemo
         configuration.addResource(hbaseConfigURL);
         configuration.addResource(hdfsConfigURL);
         try {
-            this.hTable = new HTable(configuration,"hbaseTestZY");
-            this.hTable2 = new HTable(configuration,"hbaseTestZY2");
+            this.hTable = new HTable(configuration,tableName1);
+            this.hTable2 = new HTable(configuration,tableName2);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void supportTx(String tableName){
+        try {
+            HBaseAdmin hBaseAdmin = new HBaseAdmin(configuration);
+            HTableDescriptor hTableDescriptor = hBaseAdmin.getTableDescriptor(Bytes.toBytes(tableName));
+            hTableDescriptor.addCoprocessor(TransactionProcessor.class.getName());
+
+            hBaseAdmin.disableTable(Bytes.toBytes(tableName));
+            hBaseAdmin.modifyTable(Bytes.toBytes(tableName),hTableDescriptor);
+            hBaseAdmin.enableTable(Bytes.toBytes(tableName));
+
+        } catch (IOException e) {
+            logger.info("尝试为旧表添加协处理器失败");
             e.printStackTrace();
         }
     }
@@ -73,7 +89,7 @@ public class CURDdemo
         put.add(Bytes.toBytes("f1"),Bytes.toBytes("col1"),Bytes.toBytes("val1"));
         //table 2 doesn't have f2
         Put put2 = new Put(Bytes.toBytes("T2Row1"));
-        put2.add(Bytes.toBytes("f2"),Bytes.toBytes("col1"),Bytes.toBytes("val1"));
+        put2.add(Bytes.toBytes("f1"),Bytes.toBytes("col1"),Bytes.toBytes("val1"));
         try {
             hTable.put(put);
             hTable2.put(put2);
@@ -95,11 +111,11 @@ public class CURDdemo
 //                todo 很多配置问题不懂 configmodule 是加载配置的，discovery module需要zk
                 configModule,
                 new TransactionClientModule(),
-//                加入discoverymodule后不再连接0.0.0.0 依赖于 ZKModule
+//                不使用discoverymodule 将使用配置文件中配置的主机
                 new DiscoveryModules().getDistributedModules(),
-                new ZKModule()
+                new ZKModule(),
 //                TransactionModule 没有什么用
-//                new TransactionModules().getDistributedModules()
+                new TransactionModules().getDistributedModules()
         );
         TransactionServiceClient client = injector.getInstance(TransactionServiceClient.class);
 
@@ -107,10 +123,10 @@ public class CURDdemo
         TransactionAwareHTable transactionAwareHTable2 = new TransactionAwareHTable(hTable2);
         TransactionContext context = new TransactionContext(client, transactionAwareHTable1,transactionAwareHTable2);
 
-        Put put = new Put(Bytes.toBytes("T1Row2"));
+        Put put = new Put(Bytes.toBytes("T1Row3"));
         put.add(Bytes.toBytes("f1"),Bytes.toBytes("col1"),Bytes.toBytes("val1"));
         //table 2 doesn't have f2
-        Put put2 = new Put(Bytes.toBytes("T2Row2"));
+        Put put2 = new Put(Bytes.toBytes("T2Row3"));
         put2.add(Bytes.toBytes("f2"),Bytes.toBytes("col1"),Bytes.toBytes("val1"));
 
         try {
@@ -125,6 +141,7 @@ public class CURDdemo
                 //也抛出异常
                 context.abort();
             } catch (TransactionFailureException e1) {
+                logger.info("Tephra 回滚事务失败");
                 e1.printStackTrace();
             }
         }

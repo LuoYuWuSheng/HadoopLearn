@@ -35,10 +35,16 @@ public class CURDdemoTest {
     }
 
     @Test
+    public void testSupportTx(){
+        tephraTest.supportTx("tephra1");
+        tephraTest.supportTx("tephra2");
+    }
+
+    @Test
     public void testConfig(){
         CURDdemo config = new CURDdemo();
-        String address = config.getConfiguration().get("data.tx.bind.address");
         String local = config.getConfiguration().get("data.tx.bind.address");
+        System.out.println(local);
     }
 
     @Test

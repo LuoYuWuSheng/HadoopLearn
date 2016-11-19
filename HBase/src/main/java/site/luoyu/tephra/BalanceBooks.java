@@ -1,4 +1,4 @@
-package site.luoyu;
+package site.luoyu.tephra;
 
 /**
  * Created by xd on 2016/11/11.
@@ -7,7 +7,6 @@ import com.google.common.io.Closeables;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
@@ -37,6 +36,7 @@ import org.apache.tephra.util.ConfigurationFactory;
 import org.apache.twill.zookeeper.ZKClientService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.luoyu.CURDdemo;
 
 import java.io.Closeable;
 import java.io.IOException;

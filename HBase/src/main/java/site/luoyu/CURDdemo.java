@@ -2,10 +2,7 @@ package site.luoyu;
 
 
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.apache.commons.logging.LogFactory;
-import org.apache.curator.framework.api.CuratorEvent;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -123,11 +120,11 @@ public class CURDdemo
         TransactionAwareHTable transactionAwareHTable2 = new TransactionAwareHTable(hTable2);
         TransactionContext context = new TransactionContext(client, transactionAwareHTable1,transactionAwareHTable2);
 
-        Put put = new Put(Bytes.toBytes("T1Row3"));
-        put.add(Bytes.toBytes("f1"),Bytes.toBytes("col1"),Bytes.toBytes("val1"));
+        Put put = new Put(Bytes.toBytes("row3"));
+        put.add(Bytes.toBytes("f1"),Bytes.toBytes("col1"),Bytes.toBytes("val3"));
         //table 2 doesn't have f2
-        Put put2 = new Put(Bytes.toBytes("T2Row3"));
-        put2.add(Bytes.toBytes("f2"),Bytes.toBytes("col1"),Bytes.toBytes("val1"));
+        Put put2 = new Put(Bytes.toBytes("row3"));
+        put2.add(Bytes.toBytes("f2"),Bytes.toBytes("col1"),Bytes.toBytes("val3"));
 
         try {
             context.start();
@@ -136,7 +133,7 @@ public class CURDdemo
             transactionAwareHTable2.put(put2);
             //tx
             context.finish();
-        } catch (TransactionFailureException e) {
+        } catch (Exception e) {
             try {
                 //也抛出异常
                 context.abort();

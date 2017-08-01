@@ -75,7 +75,7 @@ public class CURDdemo
             hBaseAdmin.enableTable(Bytes.toBytes(tableName));
 
         } catch (IOException e) {
-            logger.info("尝试为旧表添加协处理器失败");
+            logger.error("尝试为旧表添加协处理器失败");
             e.printStackTrace();
         }
     }

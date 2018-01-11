@@ -1,0 +1,5 @@
+disable 'Coprocessor'
+alter 'Coprocessor',METHOD => 'table_att_unset',NAME => 'coprocessor$1'
+alter 'Coprocessor',METHOD=>'table_att','coprocessor'=>'hdfs:///GISdoop.jar|site.luoyu.Coprocessor.Observer.IndexCopressor|1001'
+enable 'Coprocessor'
+exit

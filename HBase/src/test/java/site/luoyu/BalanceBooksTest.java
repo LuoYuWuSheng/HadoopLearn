@@ -58,7 +58,6 @@ public class BalanceBooksTest {
     private static TransactionService txService;
     private static ZKClientService zkClientService;
 
-    //    new File("D:\\") 不是c盘权限的问题
     @ClassRule
     public static TemporaryFolder tmpFolder = new TemporaryFolder();
 

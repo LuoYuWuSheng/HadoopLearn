@@ -27,15 +27,9 @@ public class ReadFile {
         InputStream in = null;
         OutputStream os = null;
         try {
-//            todo 这里输入的Host如果是StandBy将不能读取。那么应该怎么操作呢？
-            URI uri = new URI("hdfs://cloudgis2.com/txtTest");
-            FileSystem fs = FileSystem.get(uri,conf);
-//            读入数据 InputStream实际返回的是FSInputStream;
-            in = fs.open(new Path(uri));
-            IOUtils.copyBytes(in,System.out,4096,false);
-            System.out.println("");
-
-            URI writeURI = new URI("hdfs://cloudgis2.com/test/zyWrite");
+            URI writeURI = new URI("/zyWriteTemp");
+            FileSystem fs = FileSystem.get(writeURI,conf);
+//            fs.createNewFile(new Path(writeURI));
             os = fs.create(new Path(writeURI), new Progressable() {
                 @Override
                 public void progress() {
@@ -46,6 +40,13 @@ public class ReadFile {
             os.write(data.getBytes());
             os.flush();
             os.close();
+
+//            todo 这里输入的Host如果是StandBy将不能读取。那么应该怎么操作呢？
+//            读入数据 InputStream实际返回的是FSInputStream;
+            URI uri = new URI("/zyWriteTemp");
+            in = fs.open(new Path(uri));
+            IOUtils.copyBytes(in,System.out,4096,false);
+            System.out.println("");
 
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
